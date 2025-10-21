@@ -212,7 +212,7 @@ med_gene <- function(p.trans, p.wes, ref.table, gene1.list, target.fdr=0.1, dist
   }
 
   ##### Step 5: run sequentially #####
-  if (gene1.type == "gene") {
+  if (gene1.type.lc == "gene") {
     cat(paste0('\n-----Start DACT for ', M, ' genes (single-core) -----\n'))
     results <- lapply(seq_len(M), run_single_gene)
   } else {
