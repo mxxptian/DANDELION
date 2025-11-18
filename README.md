@@ -35,3 +35,22 @@ The function returns:
 
 The results highlight potential mediator genes that bridge genetic variation and disease phenotypes, providing a robust, interpretable framework for integrating genomic and transcriptomic association signals in complex trait studies.
 
+
+
+
+# Installation
+
+
+You can install the development version of
+`DANDELION` from Github via the `devtools` package. I suppose using
+the `remotes` package would work as well.
+
+Before installation of COTA, you are also requested the below packages:
+``` r
+install.packages(c('qvalue', 'data.table', 'stringr', 'tidyr', 'AnnotationDbi', 'org.Hs.eg.db', 'ggplot2', 'igraph', 'VennDiagram', 'biomaRt', 'plyr', 'dplyr'), dependencies=TRUE)
+
+```
+
+``` r
+devtools::install_github("mxxptian/DANDELION")
+```
