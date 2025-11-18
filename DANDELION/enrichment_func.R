@@ -170,15 +170,15 @@ run_enrichment_single <- function(
 }
 
 
+# Run an example
+# result <- run_enrichment_all(
+# UK_dir = "/Users/px/Desktop/Uchicago/Mediation/UK Biobank/",
+# pheno_file = "/Users/px/Desktop/Uchicago/Mediation/UK Biobank/phenotypes.csv",
+# mendelian_file = "/Users/px/Desktop/Uchicago/Mediation/UK Biobank/Mendelian genes of disease disorders.csv",
+# gene_position_file = "/Users/px/Desktop/Uchicago/Mediation/Testosterone/gene_position.txt",
+# n_perm = 1000,
+#  idx_start = 1,
+#  idx_end = 3
+# )
 
-result <- run_enrichment_all(
-  UK_dir = "/Users/px/Desktop/Uchicago/Mediation/UK Biobank/",
-  pheno_file = "/Users/px/Desktop/Uchicago/Mediation/UK Biobank/phenotypes.csv",
-  mendelian_file = "/Users/px/Desktop/Uchicago/Mediation/UK Biobank/Mendelian genes of disease disorders.csv",
-  gene_position_file = "/Users/px/Desktop/Uchicago/Mediation/Testosterone/gene_position.txt",
-  n_perm = 1000,
-  idx_start = 1,
-  idx_end = 3
-)
-
-save(result, file = "enrichment_replicate1000.Rdata")
+# save(result, file = "enrichment_replicate1000.Rdata")
