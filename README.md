@@ -133,7 +133,7 @@ out.ref.new = do.call(rbind, out.ref)
 ref.table.keep$gene_name = out.ref.new[,1]
 
 # Here, we consider all gene1 included in UKBB. You may specify a vector of candidate genes 1
-gene1.list = dput(colnames(p.trans))  # 变量名从candidate改为gene1.list
+gene1.list = dput(colnames(p.trans))  
 
 # STEP 1: we applied DANDELION with UKBB and GBAT data with target fdr level at 0.1
 result = med_gene(p.trans, p.wgs, ref.table, gene1.list, target.fdr=0.1, dist=5e6, gene1.type = 'Gene')
@@ -150,7 +150,7 @@ conv.table = read_excel('conservation_scores.xlsx')
 ## set saving directory of the figures
 pic_dir = '/Users/px/Desktop/test/example/'
 
-gen_fig(result.pair$gene.pair, p.wgs, eta.wgs=threshold, pic_dir)  # 更新函数参数
+gen_fig(result.pair$gene.pair, p.wgs, eta.wgs=threshold, pic_dir) 
 
 ################################# SNP->Gene->Trait CASE ######################################
 
@@ -209,7 +209,7 @@ out.ref.new = do.call(rbind, out.ref)
 ref.table.keep$gene_name = out.ref.new[,1]
 
 # Here, we consider all gene1 included in UKBB. You may specify a vector of candidate genes 1
-gene1.list = dput(colnames(p.trans))  # 变量名从candidate改为gene1.list
+gene1.list = dput(colnames(p.trans)) 
 
 # STEP 1: we applied DANDELION with UKBB and eQTLGen data with target fdr level at 0.1
 result = med_gene(p.trans, p.wgs, ref.table, gene1.list, target.fdr=0.1, dist=5e6, gene1.type = 'SNP', SNP.ref = trans.p)
@@ -227,7 +227,7 @@ conv.table = read_excel('conservation_scores.xlsx')
 ## set saving directory of the figures
 pic_dir = '/Users/px/Desktop/test/example/'
 
-gen_fig(result.pair$gene.pair, p.wgs, eta.wgs=threshold, pic_dir)  # 更新函数参数
+gen_fig(result.pair$gene.pair, p.wgs, eta.wgs=threshold, pic_dir)  
 
 
 
