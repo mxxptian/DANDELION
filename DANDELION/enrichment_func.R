@@ -69,7 +69,7 @@ run_enrichment_single <- function(
   
   threshold <- 0.05 / nrow(cau)
   
-  # --- Load DACT pair file -----------------------
+  # --- Load DANDELION pair file -----------------------
   load(paste0(trait_dir, trait_name, "_pair.Rdata"))
   
   gene2 <- unique(result.pair$pairs_dact$gene2)
@@ -134,7 +134,7 @@ run_enrichment_single <- function(
   }
   
   # =====================================================
-  # Run for different categories
+  # Run for different gene types
   # =====================================================
   res_gene2      <- perm_overlap(gene2)
   res_sig_gene2  <- perm_overlap(sig_gene2)
