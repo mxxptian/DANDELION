@@ -17,7 +17,7 @@ DANDELION takes as input:
 
 * A matrix of **p-values** (`p.trans`) representing distal-to-proximal (gene1 → gene2) associations, where rows correspond to proximal genes and columns to distal genes.
 * A named numeric vector of **WES-based p-values** (`p.wes`) for proximal gene–trait associations.
-* A vector of **candidate distal genes** (`gene1.list`), corresponding to the subset of distal genes under investigation.
+* A vector of **candidate distal genes** (`gene1.list`), corresponding to the set of distal genes, typically genes showing association signals with the disease.
 
 
 DANDELION filters out genes beyond a user-defined cis-distance (default: 5 Mb) and applies a Benjamini–Hochberg FDR correction (default FDR = 0.1) to identify statistically significant trans associations.
