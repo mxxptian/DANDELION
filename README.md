@@ -6,7 +6,8 @@
 
 **Description**
 
-`DANDELION` is a statistical framework designed to identify candidate *disease-proximal genes* by integrating whole-exome sequencing (WES) and eQTL data. It quantifies the relationship between distal and proximal genes through trans-association p-values, combines them with gene–trait association evidence, and outputs a ranked set of significant gene pairs that may mediate disease risk.
+`DANDELION` identifies disease-proximal genes (DPGs) that mediate the effects of disease-associated loci on disease risk. It models DPGs as mediators and trans regulatory targets of disease associated loci, which is named as disease distal genes (Figure below). Using a causal mediation framework, it integrate gene effects on disease obtained from burden tests of whole-exome sequencing (WES) and trans regulatory signals in disease-relevant tissues and cell types.
+In the R function and examples below, disease distal genes (trans regulators) are denoted as gene1, while disease proximal genes ( mediators and trans regulation targets) are denoted as gene2.
 
 For clarity, disease *distal genes* (putative regulatory genes) are denoted as **gene1**, while *proximal genes* (potential mediators) are denoted as **gene2** within the function.
 
@@ -18,10 +19,6 @@ DANDELION takes as input:
 * A named numeric vector of **WES-based p-values** (`p.wes`) for proximal gene–trait associations.
 * A vector of **candidate distal genes** (`gene1.list`), corresponding to the subset of distal genes under investigation.
 
-The method further incorporates genomic reference information from:
-
-* `ref.table`, containing gene annotation (gene symbol, type, chromosome, start, end), or
-* `SNP.ref`, if the exposure type (`gene1.type`) is specified as `"SNP"`.
 
 DANDELION filters out genes beyond a user-defined cis-distance (default: 5 Mb) and applies a Benjamini–Hochberg FDR correction (default FDR = 0.1) to identify statistically significant trans associations.
 
