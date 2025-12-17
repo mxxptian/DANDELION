@@ -219,13 +219,14 @@ result.pair = calc_pair.snp(mat.sig = result$mat.sig, mat.p = result$mat.p, p.wg
                            uniq_snp = uniq_snp, ref.table.keep = ref.table.keep, eta.wgs=threshold, GRCh = '37')
 
 # STEP 3: we plotted the pair identified by DANDELION
-setwd('/Users/px/Desktop/test/example/')
+setwd('/PATH_TO_FIG_FOLDER')
 
 ## load conservation score table
 conv.table = read_excel('conservation_scores.xlsx')
 
 ## set saving directory of the figures
-pic_dir = '/Users/px/Desktop/test/example/'
+pic_dir = '/PATH_TO_FIG_FOLDER'
+
 
 gen_fig(result.pair$gene.pair, p.wgs, eta.wgs=threshold, pic_dir)  
 
