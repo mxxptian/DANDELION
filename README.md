@@ -3,6 +3,7 @@
 
 
 ### **DANDELION: Identification of Candidate Disease Proximal Genes**
+`DANDELION` is the software implementation accompanying the study “Leveraging trans-gene regulation to prioritize disease-proximal genes” and provides an end-to-end implementation of the proposed mediation-based gene prioritization framework.
 
 **Description**
 
