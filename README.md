@@ -13,14 +13,15 @@ For clarity, disease *distal genes* (putative regulatory genes) are denoted as *
 
 **Details**
 
-DANDELION takes as input:
+`DANDELION` takes as input:
 
 * A matrix of **p-values** (`p.trans`) representing distal-to-proximal (gene1 → gene2) associations, where rows correspond to proximal genes and columns to distal genes.
 * A named numeric vector of **WES-based p-values** (`p.wes`) for proximal gene–trait associations.
 * A vector of **candidate distal genes** (`gene1.list`), corresponding to the set of distal genes, typically genes showing association signals with the disease.
 
 
-DANDELION filters out genes beyond a user-defined cis-distance (default: 5 Mb) and applies a Benjamini–Hochberg FDR correction (default FDR = 0.1) to identify statistically significant trans associations.
+`DANDELION` filters out genes beyond a user-defined cis-distance (default: 5 Mb) and applies a Benjamini–Hochberg FDR correction (default FDR = 0.1) to identify statistically significant trans associations. 
+`DANDELION` uses a user-defined trans-regulation distance (default: >5 Mb). For a disease and a disease-associated SNP, all genome-wide genes in trans can serve as potential mediators.  `DANDELION` uses a causal mediation method DACT to decompose all paths of no mediation into three NULL cases and robustly identifies mediation paths with high statistical power. It uses Benjamini–Hochberg FDR correction (default FDR = 0.1) to identify statistically significant mediation paths.
 
 The function returns:
 
@@ -31,6 +32,7 @@ The function returns:
 **Output**
 
 The results highlight potential mediator genes that bridge genetic variation and disease phenotypes, providing a robust, interpretable framework for integrating genomic and transcriptomic association signals in complex trait studies.
+The mediators on the significant mediation path are the DPGs. `DANDELION` can generate trans regulatory networks of DPGs based on the significant mediation paths (gene1->gene2).
 
 
 
