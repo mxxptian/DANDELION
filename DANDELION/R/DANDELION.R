@@ -272,7 +272,7 @@ calc_pair.snp <- function(mat.sig, mat.p, p.wes, gene1, uniq_snp, ref.table.keep
 
   mat.sig.new <- mat.sig.new[rowSums(mat.sig.new)!=0,colSums(mat.sig.new)!=0]
 
-  pairs_dact <- data.frame(gene1=character(), gene2=character(), DENDELION_p=character(), stringsAsFactors = FALSE) # significant pairs by DACT
+  pairs_dact <- data.frame(gene1=character(), gene2=character(), DANDELION_p=character(), stringsAsFactors = FALSE) # significant pairs by DACT
   for (i in 1:nrow(mat.sig.new)) {
     for (j in 1:ncol(mat.sig.new)) {
       if(mat.sig.new[i,j]!=0){
@@ -385,7 +385,7 @@ calc_pair.snp <- function(mat.sig, mat.p, p.wes, gene1, uniq_snp, ref.table.keep
   }
 
 
-  colnames( pairs_dact) = c('rsid', "gene2",  "DENDELION_p", 'wgs_gene2',  "gene1")
+  colnames( pairs_dact) = c('rsid', "gene2",  "DANDELION_p", 'wgs_gene2',  "gene1")
 
 
 
@@ -494,10 +494,10 @@ calc_pair.snp <- function(mat.sig, mat.p, p.wes, gene1, uniq_snp, ref.table.keep
 }
 
 
-#' @title Cleanse the pairs and disease proximal genes identified by DENDELION and map the disease proximal genes to WES significant genes (FOR genes 1 is gene.)
+#' @title Cleanse the pairs and disease proximal genes identified by DANDELION and map the disease proximal genes to WES significant genes (FOR genes 1 is gene.)
 #' @description Organize the output results of med_gene() and merge nearby genes into a single locus.
 #' @param mat.sig matrix encoding significant pair, output by med_gene().
-#' @param mat.p matrix encoding DENDELION P-values, output by med_gene()
+#' @param mat.p matrix encoding DANDELION P-values, output by med_gene()
 #' @param gene1 gene 1 names used for analysis, output by med_gene()
 #' @param p.wes a vector of length K. p value for gene 2 -> trait. Both p.trans and p.wes should contain the gene name.
 #' @param ref.table.keep reference data for position information for 'lincRNA' and 'protein_coding' which are not located in 'chrX', 'chrY' and 'chrM'.
@@ -511,7 +511,7 @@ calc_pair.snp <- function(mat.sig, mat.p, p.wes, gene1, uniq_snp, ref.table.keep
 calc_pair.gene <- function(mat.sig, mat.p, p.wes, gene1, ref.table.keep, eta.wgs=1e-5){
 
   # mat.sig: matrix encoding significant pair, output by med_gene()
-  # mat.p: matrix encoding DENDELION P-values, output by med_gene()
+  # mat.p: matrix encoding DANDELION P-values, output by med_gene()
   # gene1: gene 1 names used for analysis, output by med_gene()
   # uniq_snp: matrix should contains columns about the snp (named as 'SNP') and the corresponding significant cis gene name (named as 'GeneSymbol')
 
@@ -534,7 +534,7 @@ calc_pair.gene <- function(mat.sig, mat.p, p.wes, gene1, ref.table.keep, eta.wgs
 
   mat.sig.new <- mat.sig.new[rowSums(mat.sig.new)!=0,colSums(mat.sig.new)!=0]
 
-  pairs_dact <- data.frame(gene1=character(), gene2=character(), DENDELION_p=character(), stringsAsFactors = FALSE) # significant pairs by DACT
+  pairs_dact <- data.frame(gene1=character(), gene2=character(), DANDELION_p=character(), stringsAsFactors = FALSE) # significant pairs by DACT
   for (i in 1:nrow(mat.sig.new)) {
     for (j in 1:ncol(mat.sig.new)) {
       if(mat.sig.new[i,j]!=0){
@@ -656,11 +656,11 @@ calc_pair.gene <- function(mat.sig, mat.p, p.wes, gene1, ref.table.keep, eta.wgs
 
 
 
-#' @title Generate figures of DENDELION's result
-#' @description Generate analysis plots related to DENDELION results
+#' @title Generate figures of DANDELION's result
+#' @description Generate analysis plots related to DANDELION results
 #' @param gene.pair data frame of identified gene pair, output by calc_pair().
-#' @param sig_gene2 gene 2 identified by DENDELION which are also WES significant genes, output by calc_pair().
-#' @param non_sig.gene2 gene 2 identified by DENDELION which are NOT WES significant genes, output by calc_pair()
+#' @param sig_gene2 gene 2 identified by DANDELION which are also WES significant genes, output by calc_pair().
+#' @param non_sig.gene2 gene 2 identified by DANDELION which are NOT WES significant genes, output by calc_pair()
 #' @param conservation.score data.frame including the conservation scores which should contain columns: 1. 'pLI.score', 2. 'EDS', 3. 'RVIS', 4. 'GeneSymbol'
 #' @param pic_dir the directory to save figures
 #' @param p.wes a vector of length K. p value for gene 2 -> trait. Both p.trans and p.wes should contain the gene name.
@@ -681,7 +681,7 @@ gen_fig = function(gene.pair, p.wes, eta.wgs=1e-5,  pic_dir){
 
 
   data = data.frame(gene = c(WES.imp, na.omit(unique(gene.pair[,"gene2"]))),
-                    category = c(rep('WES_Genes', length(WES.imp)), rep('DENDELION_Genes', length(na.omit(unique(gene.pair[,"gene2"]))))))
+                    category = c(rep('WES_Genes', length(WES.imp)), rep('DANDELION_Genes', length(na.omit(unique(gene.pair[,"gene2"]))))))
 
 
 
@@ -748,7 +748,7 @@ gen_fig = function(gene.pair, p.wes, eta.wgs=1e-5,  pic_dir){
 
 }
 
-########## Useful Functions for DENDELION ##########
+########## Useful Functions for DANDELION ##########
 
 nonnullPropEst <- function(x,u,sigma){
   # x is a vector
