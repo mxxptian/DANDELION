@@ -5,7 +5,7 @@
 ### **DANDELION: Identification of Candidate Disease Proximal Genes**
 `DANDELION` is the software implementation accompanying the study “Leveraging trans-gene regulation to prioritize disease-proximal genes” and provides an end-to-end implementation of the proposed mediation-based gene prioritization framework.
 
-**Description**
+## Description
 
 `DANDELION` identifies disease-proximal genes (DPGs) that mediate the effects of disease-associated loci on disease risk. It models DPGs as mediators and trans regulatory targets of disease associated loci, which is named as disease distal genes (Figure below). Using a causal mediation framework, it integrate gene effects on disease obtained from burden tests of whole-exome sequencing (WES) and trans regulatory signals in disease-relevant tissues and cell types.
 In the R function and examples below, disease distal genes (trans regulators) are denoted as gene1, while disease proximal genes ( mediators and trans regulation targets) are denoted as gene2.
@@ -35,7 +35,7 @@ The function returns:
 The results highlight potential mediator genes that bridge genetic variation and disease phenotypes, providing a robust, interpretable framework for integrating genomic and transcriptomic association signals in complex trait studies.
 The mediators on the significant mediation path are the DPGs. `DANDELION` can generate trans regulatory networks of DPGs based on the significant mediation paths (gene1->gene2).
 
-## 📁Analysis
+## Analysis
 
 The `Analysis/` directory contains all analyses performed in this project.  
 It is organized into **simulation** and **real data**, each serving a distinct methodological purpose.
