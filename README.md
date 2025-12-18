@@ -35,6 +35,70 @@ The function returns:
 The results highlight potential mediator genes that bridge genetic variation and disease phenotypes, providing a robust, interpretable framework for integrating genomic and transcriptomic association signals in complex trait studies.
 The mediators on the significant mediation path are the DPGs. `DANDELION` can generate trans regulatory networks of DPGs based on the significant mediation paths (gene1->gene2).
 
+## 📁Analysis
+
+The `Analysis/` directory contains all analyses performed in this project.  
+It is organized into **simulation** and **real data**, each serving a distinct methodological purpose.
+
+---
+
+###  Analysis/simulation/
+
+This folder contains simulation studies designed to **evaluate the statistical performance of the DANDELION framework** under controlled data-generating mechanisms.
+
+The simulations focus on assessing:
+
+- **Statistical power (simulation_power.R)**  
+  The ability of DANDELION to correctly identify disease-proximal genes (gene2) that truly mediate the effects of gene1 on the trait.
+
+- **False discovery rate (FDR) control (simulation_fdr.R)**  
+  The accuracy of DANDELION in maintaining target FDR levels across a wide range of signal sparsity and effect size configurations.
+
+
+- **Compare with competing method (Archie) (simulation_compare.R)**  
+  Performance is evaluated at both:
+  - the **global level** (aggregating signals across all gene1), and
+  - the **per-gene / per-SNP level**, ensuring stable behavior across analytical resolutions.
+
+All simulation pipelines use the **same DANDELION test statistic** as implemented in the real data analysis (`med_gene()`), ensuring full methodological consistency.
+
+---
+
+### Analysis/real_data 
+
+This folder contains all analyses based on **real human genetic data**, serving as the primary application of the DANDELION framework.
+
+In particular, it includes:
+
+- **Blood trait analyses (blood trait analysis.R)**  
+  Application of DANDELION to blood-related traits by integrating:
+  - trans-regulatory association statistics,
+  - whole-exome sequencing (WES)–based gene-level association results,
+  - identification of candidate disease-proximal genes that mediate the effects of disease-associated loci on blood traits.
+All real data analyses follow the same statistical definitions and analytical pipeline validated in the simulation studies.
+
+- **Enrichment_analysis (enrichment_func.R)**
+
+  Enrichment analyses applied to genes prioritized by **DANDELION** in real data.
+
+  For each blood-related trait, we assess whether **DANDELION-identified disease-proximal genes** are enriched for **known Mendelian disease genes**, compared      with randomly sampled gene sets matched on gene length.  
+  
+  Enrichment is evaluated for multiple gene categories, including:
+  - all disease-proximal genes identified by DANDELION,
+  - disease-proximal genes that are significant in whole-exome sequencing (WES),
+  - disease-proximal genes that are not WES-significant,
+  - burden-only genes identified by WES but not prioritized by DANDELION.
+
+This analysis provides biological validation of DANDELION by testing whether its prioritized genes are preferentially associated with known Mendelian disease mechanisms beyond standard burden-based approaches.
+
+---
+
+###  Methodological Consistency
+
+Simulation studies and real data analyses are tightly coupled:
+
+> Simulation studies establish the statistical validity and operating characteristics of DANDELION, while real data analyses demonstrate its practical utility.  
+> All analyses are performed using the same core DANDELION statistic and modeling assumptions.
 
 
 
