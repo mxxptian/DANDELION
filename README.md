@@ -16,7 +16,7 @@ For clarity, disease *distal genes* (putative regulatory genes) are denoted as *
 
 `DANDELION` takes as input:
 
-* A matrix of **p-values** (`p.trans`) representing distal-to-proximal (gene1 → gene2) associations, where rows correspond to proximal genes and columns to distal genes.
+* A matrix of **trans regulation p-values** (`p.trans`) representing distal-to-proximal (gene1 → gene2) associations, where rows correspond to proximal genes and columns to distal genes. The trans signals should be from tissues that are relevant to the disease of interest. We provide the trans p value matrices in whole blood datasets(eQTLGEN and DGN) in this package. Users interested in diseases relevant to whole blood can use them directly to nominate candidate DPGs.
 * A named numeric vector of **WES-based p-values** (`p.wes`) for proximal gene–trait associations.
 * A vector of **candidate distal genes** (`gene1.list`), corresponding to the set of distal genes, typically genes showing association signals with the disease.
 
