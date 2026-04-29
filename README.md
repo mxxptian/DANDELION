@@ -7,12 +7,33 @@
 
 ## Description
 
-`DANDELION` identifies disease-proximal genes (DPGs) that mediate the effects of disease-associated loci on disease risk. It models DPGs as mediators and trans regulatory targets of disease associated loci, which is named as disease distal genes (Figure below). Using a causal mediation framework, it integrate gene effects on disease obtained from burden tests of whole-exome sequencing (WES) and trans regulatory signals in disease-relevant tissues and cell types.
-In the R function and examples below, disease distal genes (trans regulators) are denoted as gene1, while disease proximal genes ( mediators and trans regulation targets) are denoted as gene2.
+`DANDELION` identifies disease-proximal genes (DPGs) that may mediate the effects of disease-associated loci on disease risk. In this framework, DPGs are modeled as both candidate mediators and trans-regulatory targets of disease-associated loci, which are referred to as disease-distal genes.
 
-For clarity, disease *distal genes* (putative regulatory genes) are denoted as **gene1**, while *proximal genes* (potential mediators) are denoted as **gene2** within the function.
+To assess mediation, `DANDELION` implements the Divide-Aggregate Composite-null Test (DACT) framework proposed by Liu et al. (2022) and adapts it to the trans-gene regulation setting. Specifically, `DANDELION` combines trans-association p-values with gene-level burden test p-values to prioritize candidate proximal genes and distal-proximal gene pairs.
 
-**Details**
+Using this causal mediation framework, `DANDELION` integrates gene-level effects on disease estimated from whole-exome sequencing (WES) burden tests with trans-regulatory signals measured in disease-relevant tissues and cell types.
+
+In the R functions and examples below, disease-distal genes, or putative trans-regulatory genes, are denoted as **gene1**, whereas disease-proximal genes, or candidate mediators and trans-regulatory targets, are denoted as **gene2**.
+
+## Citation
+
+The statistical testing framework in `DANDELION` builds on the Divide-Aggregate Composite-null Test (DACT):
+
+Liu, Z., Shen, J., Barfield, R., Schwartz, J., Baccarelli, A. A., & Lin, X. (2022). Large-Scale Hypothesis Testing for Causal Mediation Effects with Applications in Genome-wide Epigenetic Studies. *Journal of the American Statistical Association*, 117(537), 67–81. https://doi.org/10.1080/01621459.2021.1914634
+
+The trans-gene regulation application is described in:
+
+Salamone, I. M., Tian, P., Qi, Z., Zhao, J., Zhang, L., Tan, Q., Li, J., Michael, A. N., Thornburg, A. G., Sakabe, N. J., Weber, Z. T., Minogue, M., Chen, B., Ciszewski, C., He, X., Shah, H., Vercelli, D., Ober, C., Lin, H., Liu, Z., Nóbrega, M. A., & Liu, X. (under review). *Leveraging trans-gene regulation prioritizes central genes and pathways in asthma*.
+
+## Authorship
+
+The original R implementation of `DANDELION` was written by **Peixin Tian** as part of research conducted in the laboratory of **Dr. Zhonghua Liu**.
+
+Lab website: https://sites.google.com/view/drliu/home
+
+Copyright (C) 2025 Peixin Tian.
+
+## Details
 
 `DANDELION` takes as input:
 
