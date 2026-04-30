@@ -24,7 +24,7 @@ In the R functions and examples below:
 
 To assess mediation, `DANDELION` implements and adapts the **Divide-Aggregate Composite-null Test (DACT)** framework to the trans-gene regulation setting. Specifically, `DANDELION` combines trans-association p-values with gene-level burden-test p-values to prioritize candidate disease-proximal genes and distal-proximal gene pairs.
 
-The statistical testing framework in `DANDELION` builds on DACT, originally proposed for large-scale causal mediation testing by Liu et al. (2022). Details of the causal mediation assumptions, composite-null structure, and calibration strategy are provided in the original DACT paper.
+Details of the causal mediation assumptions, composite-null structure, p-value computation, and statistical strategy are provided in the original DACT paper (Liu et al. 2022).
 
 ## Supported analysis modes
 
