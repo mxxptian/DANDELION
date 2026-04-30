@@ -13,7 +13,7 @@ In the R functions and examples below:
 * **gene1** denotes the disease-distal exposure, which can be either a regulatory gene or a SNP.
 * **gene2** denotes the disease-proximal candidate mediator and trans-regulatory target.
 
-## Overview of DANDELION
+## Overview of DANDELION R package
 
 `DANDELION` combines two sources of evidence:
 
