@@ -24,9 +24,6 @@ To assess mediation, `DANDELION` implements and adapts the **Divide-Aggregate Co
 
 Details of the causal mediation assumptions, composite-null structure, p-value computation, and statistical theory are provided in the original DACT paper (Liu et al. 2022).
 
-## Supported analysis modes
-
-`DANDELION` supports two exposure settings.
 
 ### 1. Gene-based DANDELION
 
@@ -378,14 +375,6 @@ res <- med_gene(
   verbose = TRUE
 )
 ```
-
-## Example data and full analysis scripts
-
-A small example dataset and extended example scripts can be accessed here:
-
-[https://www.dropbox.com/scl/fo/b1r27fxqlq84ywory8qmo/ABRuFJpz1FIAy9vluMhLAMU?rlkey=n3pzgkdd0fqz9waamidlyfcfy&dl=0](https://www.dropbox.com/scl/fo/b1r27fxqlq84ywory8qmo/ABRuFJpz1FIAy9vluMhLAMU?rlkey=n3pzgkdd0fqz9waamidlyfcfy&dl=0)
-
-This Dropbox folder contains files used in the original extended examples, including gene-based and SNP-based DANDELION workflows. Users should update file paths before running these scripts locally.
 
 ## Analysis directory
 
