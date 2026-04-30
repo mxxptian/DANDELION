@@ -1,4 +1,3 @@
-<img width="468" height="13" alt="image" src="https://github.com/user-attachments/assets/1e2bc44a-e7e8-4505-ab68-65e8c2b0dbb5" /><img width="468" height="13" alt="image" src="https://github.com/user-attachments/assets/f489186a-072c-4746-b219-81c277468cb7" /># DANDELION
 
 `DANDELION` is an R package for identifying **disease-proximal genes (DPGs)** that may mediate the effects of disease-associated loci on disease risk. It provides an implementation of a mediation-based gene prioritization framework that integrates trans-regulatory association signals with gene-level disease association evidence.
 
