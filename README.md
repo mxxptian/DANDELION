@@ -413,7 +413,7 @@ The trans-gene regulation paper is here:
 
 **R implementation:** Peixin Tian
 
-**Copyright:** Copyright (C) 2026 Peixin Tian.
+**Copyright:** Copyright (C) 2025 Peixin Tian.
 
 **License:** GPL-3.0. See the `LICENSE` file.
 
