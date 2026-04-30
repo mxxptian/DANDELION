@@ -383,13 +383,15 @@ If provided with the GitHub repository, the `Analysis/` directory contains scrip
 
 This folder contains simulation studies designed to evaluate the statistical performance of DANDELION under controlled data-generating mechanisms.
 
+**A lightweight simulation template is provided in**: Analysis/simulation/global_fdr_simulation_template.R & Analysis/simulation/simulation_compare_template.R
+
 The simulation analyses assess:
 
 * **Statistical power**: the ability of DANDELION to correctly identify true disease-proximal genes.
 * **False discovery rate control**: the ability of DANDELION to maintain target FDR levels across signal sparsity and effect-size settings.
 * **Comparison with competing methods**: performance relative to alternative approaches, including Archie, at both global and per-exposure levels.
 
-* **A lightweight simulation template is provided in**: Analysis/simulation/global_fdr_simulation_template.R & Analysis/simulation/simulation_compare_template.R
+
 
 All simulation pipelines use the same core DANDELION test statistic implemented in `med_gene()`.
 
