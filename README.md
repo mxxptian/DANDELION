@@ -1,325 +1,459 @@
 # DANDELION
 
+<!-- badges: start -->
 
+[![R-CMD-check](https://github.com/mxxptian/DANDELION/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/mxxptian/DANDELION/actions/workflows/R-CMD-check.yaml)
 
-### **DANDELION: Identification of Candidate Disease Proximal Genes**
-`DANDELION` is the software implementation accompanying the study “Leveraging trans-gene regulation to prioritize disease-proximal genes” and provides an end-to-end implementation of the proposed mediation-based gene prioritization framework.
+<!-- badges: end -->
 
-## Description
+## DANDELION: Identification of Candidate Disease-Proximal Genes
 
-`DANDELION` identifies disease-proximal genes (DPGs) that may mediate the effects of disease-associated loci on disease risk. In this framework, DPGs are modeled as both candidate mediators and trans-regulatory targets of disease-associated loci, which are referred to as disease-distal genes.
+`DANDELION` is an R package for identifying **disease-proximal genes (DPGs)** that may mediate the effects of disease-associated loci on disease risk. It provides an implementation of a mediation-based gene prioritization framework that integrates trans-regulatory association signals with gene-level disease association evidence.
 
-To assess mediation, `DANDELION` implements the Divide-Aggregate Composite-null Test (DACT) framework proposed by Liu et al. (2022) and adapts it to the trans-gene regulation setting. Specifically, `DANDELION` combines trans-association p-values with gene-level burden test p-values to prioritize candidate proximal genes and distal-proximal gene pairs.
+This package accompanies the study:
 
-Using this causal mediation framework, `DANDELION` integrates gene-level effects on disease estimated from whole-exome sequencing (WES) burden tests with trans-regulatory signals measured in disease-relevant tissues and cell types.
+> *Leveraging trans-gene regulation prioritizes central genes and pathways in asthma*.
 
-In the R functions and examples below, disease-distal genes, or putative trans-regulatory genes, are denoted as **gene1**, whereas disease-proximal genes, or candidate mediators and trans-regulatory targets, are denoted as **gene2**.
+In the `DANDELION` framework, disease-associated loci or genes are treated as upstream exposures, and genome-wide genes are evaluated as candidate mediators. Candidate mediator genes prioritized by significant mediation paths are referred to as **disease-proximal genes (DPGs)**. Disease-associated loci or regulatory genes that may act upstream of DPGs are referred to as **disease-distal genes**.
 
+In the R functions and examples below:
 
+* **gene1** denotes the disease-distal exposure, which can be either a regulatory gene or a SNP.
+* **gene2** denotes the disease-proximal candidate mediator and trans-regulatory target.
 
-## Code Authorship and Copyright
+## Method overview
 
-**R implementation:** Peixin Tian
+`DANDELION` combines two sources of evidence:
 
-**Copyright:** Copyright (C) 2025 Peixin Tian.
+1. **Trans-regulatory association p-values**, representing the association between an upstream exposure and a downstream gene.
+2. **Gene-level disease association p-values**, such as burden-test p-values from whole-exome sequencing (WES) or other gene-level association tests.
 
-**License:** GPL-3.0 (see LICENSE file)
+To assess mediation, `DANDELION` implements and adapts the **Divide-Aggregate Composite-null Test (DACT)** framework to the trans-gene regulation setting. Specifically, `DANDELION` combines trans-association p-values with gene-level burden-test p-values to prioritize candidate disease-proximal genes and distal-proximal gene pairs.
 
-**Affiliation:** The implementation was completed during Peixin Tian's doctoral research.
+The statistical testing framework in `DANDELION` builds on DACT, originally proposed for large-scale causal mediation testing by Liu et al. (2022). Details of the causal mediation assumptions, composite-null structure, and calibration strategy are provided in the original DACT paper.
 
-**Data:** The trans-gene expression data in asthma was provided by Dr. Xuanyao Liu.
+## Supported analysis modes
+
+`DANDELION` supports two exposure settings.
+
+### 1. Gene-based DANDELION
+
+In gene-based DANDELION, the exposure side contains disease-distal genes. The input trans-association matrix represents gene-to-gene trans-regulatory p-values.
+
+A typical use case is:
+
+```text
+disease-distal gene -> trans target gene -> disease trait
+```
+
+When raw genotype and gene expression data are available, gene-based trans-regulatory effects can be estimated using approaches such as GBAT. In this setting, predicted genetically regulated expression of a distal gene can be tested against genome-wide target genes to obtain gene-to-gene trans-association p-values.
+
+### 2. SNP-based DANDELION
+
+In SNP-based DANDELION, the exposure side contains SNPs. The input trans-association matrix represents SNP-to-gene trans-regulatory p-values, such as trans-eQTL summary statistics.
+
+A typical use case is:
+
+```text
+SNP -> trans target gene -> disease trait
+```
+
+This setting is useful when raw genotype and expression data are unavailable but trans-eQTL summary statistics are available.
+
+## Features
+
+* Supports both **gene-based** and **SNP-based** DANDELION analyses.
+* Integrates trans-regulatory p-values with gene-level disease association p-values.
+* Removes local cis genes using a user-defined genomic window before trans-mediation testing.
+* Applies a DACT-style composite-null testing framework to prioritize candidate mediators.
+* Returns structured R objects that users can inspect, print, and extract from.
+* Provides post-processing functions for organizing significant gene pairs.
+* Supports locus-level grouping of nearby exposure genes.
+* Provides a simple network visualization function for DANDELION-prioritized relationships.
+
+## Installation
+
+You can install the development version from GitHub with:
+
+```r
+# install.packages("remotes")
+remotes::install_github("mxxptian/DANDELION")
+```
+
+After installation, load the package with:
+
+```r
+library(DANDELION)
+```
+
+### Optional dependency
+
+The Bioconductor package `qvalue` is used for q-value estimation when available. If `qvalue` is not installed, `DANDELION` falls back to Benjamini-Hochberg adjusted p-values.
+
+```r
+# Optional
+# install.packages("BiocManager")
+BiocManager::install("qvalue")
+```
+
+## Main functions
+
+| Function           | Description                                                                                                           |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------- |
+| `med_gene()`       | Applies DANDELION to identify significant exposure-gene2 mediation pairs. The exposure can be a distal gene or a SNP. |
+| `calc_pair.gene()` | Organizes significant gene-based DANDELION results and merges nearby exposure genes into locus-level regions.         |
+| `calc_pair.snp()`  | Organizes significant SNP-based DANDELION results and maps SNP exposures to cis genes.                                |
+| `gen_fig()`        | Generates a network visualization of DANDELION-prioritized gene-pair results.                                         |
+
+## Required input data
+
+### 1. `p.trans`: trans-association p-value matrix
+
+`p.trans` is a numeric matrix of trans-regulatory association p-values.
+
+* Rows correspond to candidate disease-proximal genes (**gene2**).
+* Columns correspond to exposures (**gene1**), either genes or SNPs.
+* Row names and column names must be provided.
+
+For gene-based DANDELION:
+
+```text
+rows    = candidate proximal genes / trans target genes
+columns = distal regulatory genes
+```
+
+For SNP-based DANDELION:
+
+```text
+rows    = candidate proximal genes / trans target genes
+columns = SNPs
+```
+
+### 2. `p.wes`: gene-level disease association p-values
+
+`p.wes` is a named numeric vector of gene-level disease association p-values.
+
+Examples include:
+
+* WES burden-test p-values,
+* gene-level GWAS p-values,
+* other gene-level association statistics.
+
+The names of `p.wes` should match the row names of `p.trans`.
+
+### 3. `ref.table`: gene annotation table
+
+`ref.table` provides gene position and gene type information.
+
+It must contain the following columns:
+
+| Column       | Description                                      |
+| ------------ | ------------------------------------------------ |
+| `gene_name`  | Gene symbol or gene identifier                   |
+| `type`       | Gene type, such as `protein_coding` or `lincRNA` |
+| `Chromosome` | Chromosome in `chr1`, `chr2`, ... format         |
+| `start`      | Gene start position                              |
+| `end`        | Gene end position                                |
+
+`DANDELION` internally keeps autosomal `protein_coding` and `lincRNA` genes and removes genes on `chrM`, `chrX`, and `chrY` for the main trans-mediation analysis.
+
+### 4. `gene1.list`: candidate exposure list
+
+`gene1.list` is a character vector of candidate exposures to analyze.
+
+* For gene-based DANDELION, it should contain candidate distal genes.
+* For SNP-based DANDELION, it should contain candidate SNPs.
+* Values must be present in `colnames(p.trans)`.
+
+### 5. `SNP.ref`: SNP annotation table for SNP-based DANDELION
+
+When `gene1.type = "SNP"`, `SNP.ref` must be provided.
+
+It must contain:
+
+| Column   | Description                                 |
+| -------- | ------------------------------------------- |
+| `SNP`    | SNP rsID                                    |
+| `SNPPos` | SNP genomic position                        |
+| `SNPChr` | SNP chromosome, either `1` or `chr1` format |
+
+### 6. `uniq_snp`: SNP-to-cis-gene mapping table
+
+For `calc_pair.snp()`, `uniq_snp` is used to map SNP exposures to their corresponding cis genes.
+
+It must contain:
+
+| Column       | Description                   |
+| ------------ | ----------------------------- |
+| `SNP`        | SNP rsID                      |
+| `GeneSymbol` | Corresponding cis gene symbol |
+
+## Quick start: gene-based DANDELION
+
+The following toy example demonstrates the gene-based workflow.
+
+```r
+library(DANDELION)
+
+set.seed(1)
+
+# Example trans-association p-value matrix.
+# Rows are candidate disease-proximal genes; columns are exposure genes.
+p.trans <- matrix(runif(60, 0.001, 0.9), nrow = 12, ncol = 5)
+rownames(p.trans) <- paste0("G", 1:12)
+colnames(p.trans) <- paste0("E", 1:5)
+
+# Example gene-level disease association p-values.
+p.wes <- runif(12, 0.001, 0.9)
+names(p.wes) <- paste0("G", 1:12)
+
+# Example gene annotation table.
+ref.table <- data.frame(
+  gene_name = c(paste0("G", 1:12), paste0("E", 1:5)),
+  type = "protein_coding",
+  Chromosome = "chr1",
+  start = seq_len(17) * 1e7,
+  end = seq_len(17) * 1e7 + 1000
+)
+
+# Run gene-based DANDELION.
+res <- med_gene(
+  p.trans = p.trans,
+  p.wes = p.wes,
+  ref.table = ref.table,
+  gene1.list = colnames(p.trans),
+  gene1.type = "Gene",
+  target.fdr = 0.1,
+  dist = 5e6
+)
+
+res
+```
+
+The returned object is a structured `dandelion_result` object. You can extract information directly:
+
+```r
+res$gene1
+res$mat.sig[1:5, 1:3]
+res$mat.p[1:5, 1:3]
+```
+
+Organize significant gene-gene pairs:
+
+```r
+ref.table.keep <- ref.table[
+  ref.table$type %in% c("lincRNA", "protein_coding") &
+    !(ref.table$Chromosome %in% c("chrM", "chrX", "chrY")),
+]
+
+pair.res <- calc_pair.gene(
+  mat.sig = res$mat.sig,
+  mat.p = res$mat.p,
+  p.wes = p.wes,
+  gene1 = res$gene1,
+  ref.table.keep = ref.table.keep,
+  eta.wgs = 1e-5
+)
+
+pair.res
+```
+
+## Quick start: SNP-based DANDELION
+
+The following toy example demonstrates the SNP-based workflow.
+
+```r
+library(DANDELION)
+
+set.seed(1)
+
+# Example SNP-to-gene trans-association p-value matrix.
+# Rows are candidate disease-proximal genes; columns are SNP exposures.
+p.trans <- matrix(runif(60, 0.001, 0.9), nrow = 12, ncol = 5)
+rownames(p.trans) <- paste0("G", 1:12)
+colnames(p.trans) <- paste0("rs", 1:5)
+
+p.wes <- runif(12, 0.001, 0.9)
+names(p.wes) <- paste0("G", 1:12)
+
+ref.table <- data.frame(
+  gene_name = paste0("G", 1:12),
+  type = "protein_coding",
+  Chromosome = "chr1",
+  start = seq_len(12) * 1e7,
+  end = seq_len(12) * 1e7 + 1000
+)
+
+SNP.ref <- data.frame(
+  SNP = paste0("rs", 1:5),
+  SNPPos = seq_len(5) * 2e7,
+  SNPChr = "1"
+)
+
+uniq_snp <- data.frame(
+  SNP = paste0("rs", 1:5),
+  GeneSymbol = paste0("G", 1:5)
+)
+
+# Run SNP-based DANDELION.
+res <- med_gene(
+  p.trans = p.trans,
+  p.wes = p.wes,
+  ref.table = ref.table,
+  gene1.list = colnames(p.trans),
+  gene1.type = "SNP",
+  SNP.ref = SNP.ref,
+  target.fdr = 0.1,
+  dist = 5e6
+)
+
+res
+```
+
+Organize significant SNP-gene pairs:
+
+```r
+ref.table.keep <- ref.table[
+  ref.table$type %in% c("lincRNA", "protein_coding") &
+    !(ref.table$Chromosome %in% c("chrM", "chrX", "chrY")),
+]
+
+pair.res <- calc_pair.snp(
+  mat.sig = res$mat.sig,
+  mat.p = res$mat.p,
+  p.wes = p.wes,
+  gene1 = res$gene1,
+  uniq_snp = uniq_snp,
+  ref.table.keep = ref.table.keep,
+  SNP.ref = SNP.ref,
+  eta.wgs = 1e-5
+)
+
+pair.res
+```
+
+## Output objects
+
+### Output from `med_gene()`
+
+`med_gene()` returns an object of class `dandelion_result`.
+
+| Output       | Description                                        |
+| ------------ | -------------------------------------------------- |
+| `gene1`      | Exposures with at least one valid DANDELION result |
+| `mat.sig`    | Matrix encoding significant gene1-gene2 pairs      |
+| `mat.p`      | Matrix of DANDELION p-values                       |
+| `gene1.type` | Exposure type, either `Gene` or `SNP`              |
+| `target.fdr` | FDR cutoff used for identifying significant pairs  |
+
+### Output from `calc_pair.gene()` and `calc_pair.snp()`
+
+These functions return objects of class `dandelion_pairs`.
+
+| Output          | Description                                               |
+| --------------- | --------------------------------------------------------- |
+| `pairs_dact`    | Significant DANDELION pairs before locus-level merging    |
+| `gene.pair`     | Pair table after organizing exposure genes into loci      |
+| `sig_gene2`     | DPGs that are also significant in gene-level burden tests |
+| `non_sig.gene2` | DPGs that are not significant in gene-level burden tests  |
+
+## Network visualization
+
+`gen_fig()` generates a network visualization from organized DANDELION gene-pair results.
+
+```r
+gen_fig(
+  gene.pair = pair.res$gene.pair,
+  p.wes = p.wes,
+  eta.wgs = 1e-5,
+  pic_dir = "path/to/output/folder"
+)
+```
+
+The function saves `Network.pdf` to `pic_dir` and invisibly returns the output file path.
+
+## Verbose output
+
+By default, DANDELION functions do not print progress messages to the console. To show progress messages, set `verbose = TRUE`:
+
+```r
+res <- med_gene(
+  p.trans = p.trans,
+  p.wes = p.wes,
+  ref.table = ref.table,
+  gene1.list = colnames(p.trans),
+  gene1.type = "Gene",
+  verbose = TRUE
+)
+```
+
+## Example data and full analysis scripts
+
+A small example dataset and extended example scripts can be accessed here:
+
+[https://www.dropbox.com/scl/fo/b1r27fxqlq84ywory8qmo/ABRuFJpz1FIAy9vluMhLAMU?rlkey=n3pzgkdd0fqz9waamidlyfcfy&dl=0](https://www.dropbox.com/scl/fo/b1r27fxqlq84ywory8qmo/ABRuFJpz1FIAy9vluMhLAMU?rlkey=n3pzgkdd0fqz9waamidlyfcfy&dl=0)
+
+This Dropbox folder contains files used in the original extended examples, including gene-based and SNP-based DANDELION workflows. Users should update file paths before running these scripts locally.
+
+## Analysis directory
+
+If provided with the GitHub repository, the `Analysis/` directory contains scripts used for simulation and real-data applications.
+
+### `Analysis/simulation/`
+
+This folder contains simulation studies designed to evaluate the statistical performance of DANDELION under controlled data-generating mechanisms.
+
+The simulation analyses assess:
+
+* **Statistical power**: the ability of DANDELION to correctly identify true disease-proximal genes.
+* **False discovery rate control**: the ability of DANDELION to maintain target FDR levels across signal sparsity and effect-size settings.
+* **Comparison with competing methods**: performance relative to alternative approaches, including Archie, at both global and per-exposure levels.
+
+All simulation pipelines use the same core DANDELION test statistic implemented in `med_gene()`.
+
+### `Analysis/real_data/`
+
+This folder contains real-data analyses applying DANDELION to human genetic and transcriptomic association data.
+
+Example analyses include:
+
+* **Blood trait analyses** integrating trans-regulatory statistics with WES-based gene-level association results.
+* **Enrichment analyses** evaluating whether DANDELION-prioritized DPGs are enriched for known disease genes compared with matched random gene sets.
+
+The real-data analyses demonstrate how DANDELION can prioritize candidate mediator genes beyond standard burden-based approaches.
+
+## Methodological consistency
+
+Simulation and real-data analyses use the same core DANDELION statistic and modeling assumptions.
+
+> Simulation studies establish the statistical validity and operating characteristics of DANDELION, while real-data analyses demonstrate its practical utility.
 
 ## Citation
 
+If you use `DANDELION`, please cite the following work.
 
-If you use this code, please cite:
+The statistical testing framework in `DANDELION` builds on the Divide-Aggregate Composite-null Test:
 
-Liu, Z., Shen, J., Barfield, R., Schwartz, J., Baccarelli, A. A., & Lin, X. (2022). Large-Scale Hypothesis Testing for Causal Mediation Effects with Applications in Genome-wide Epigenetic Studies. *Journal of the American Statistical Association*, 117(537), 67–81. https://doi.org/10.1080/01621459.2021.1914634
+> Liu, Z., Shen, J., Barfield, R., Schwartz, J., Baccarelli, A. A., & Lin, X. (2022). Large-Scale Hypothesis Testing for Causal Mediation Effects with Applications in Genome-wide Epigenetic Studies. *Journal of the American Statistical Association*, 117(537), 67–81. [https://doi.org/10.1080/01621459.2021.1914634](https://doi.org/10.1080/01621459.2021.1914634)
 
-Salamone, I. M., Tian, P., Qi, Z., Zhao, J., Zhang, L., Tan, Q., Li, J., Michael, A. N., Thornburg, A. G., Sakabe, N. J., Weber, Z. T., Minogue, M., Chen, B., Ciszewski, C., He, X., Shah, H., Vercelli, D., Ober, C., Lin, H., Liu, Z., Nóbrega, M. A., & Liu, X. (under review). *Leveraging trans-gene regulation prioritizes central genes and pathways in asthma*.
+The trans-gene regulation application is described in:
 
-## Details
+> Salamone, I. M., Tian, P., Qi, Z., Zhao, J., Zhang, L., Tan, Q., Li, J., Michael, A. N., Thornburg, A. G., Sakabe, N. J., Weber, Z. T., Minogue, M., Chen, B., Ciszewski, C., He, X., Shah, H., Vercelli, D., Ober, C., Lin, H., Liu, Z., Nóbrega, M. A., & Liu, X. (under review). *Leveraging trans-gene regulation prioritizes central genes and pathways in asthma*.
 
-`DANDELION` takes as input:
+## Authorship and copyright
 
-* A matrix of **trans regulation p-values** (`p.trans`) representing distal-to-proximal (gene1 → gene2) associations, where rows correspond to proximal genes and columns to distal genes. The trans signals should be from tissues that are relevant to the disease of interest. We provide the trans p value matrices in whole blood datasets(eQTLGEN and DGN) in this package. Users interested in diseases relevant to whole blood can use them directly to nominate candidate DPGs.
-* A named numeric vector of **WES-based p-values** (`p.wes`) for proximal gene–trait associations.
-* A vector of **candidate distal genes** (`gene1.list`), corresponding to the set of distal genes, typically genes showing association signals with the disease.
+**R implementation:** Peixin Tian
 
+**Copyright:** Copyright (C) 2026 Peixin Tian.
 
-`DANDELION` filters out genes beyond a user-defined cis-distance (default: 5 Mb) and applies a Benjamini–Hochberg FDR correction (default FDR = 0.1) to identify statistically significant trans associations. 
-`DANDELION` uses a user-defined trans-regulation distance (default: >5 Mb). For a disease and a disease-associated SNP, all genome-wide genes in trans can serve as potential mediators.  `DANDELION` uses a causal mediation method DACT to decompose all paths of no mediation into three NULL cases and robustly identifies mediation paths with high statistical power. It uses Benjamini–Hochberg FDR correction (default FDR = 0.1) to identify statistically significant mediation paths.
+**License:** GPL-3.0. See the `LICENSE` file.
 
-The function returns:
+**Affiliation:** The original R implementation was written by Peixin Tian as part of research conducted in the laboratory of Dr. Zhonghua Liu.
 
-1. A list of significant **distal (gene1)** candidates.
-2. A data frame of **identified trans gene pairs**.
-3. A matrix of **DANDELION-adjusted p-values** summarizing the joint evidence across datasets.
+Lab website: [https://sites.google.com/view/drliu/home](https://sites.google.com/view/drliu/home)
 
-**Output**
+**Data note:** The trans-gene expression data in asthma were provided by Dr. Xuanyao Liu.
 
-The results highlight potential mediator genes that bridge genetic variation and disease phenotypes, providing a robust, interpretable framework for integrating genomic and transcriptomic association signals in complex trait studies.
-The mediators on the significant mediation path are the DPGs. `DANDELION` can generate trans regulatory networks of DPGs based on the significant mediation paths (gene1->gene2).
+## License
 
-## Analysis
-
-The `Analysis/` directory contains all analyses performed in this project.  
-It is organized into **simulation** and **real data**, each serving a distinct methodological purpose.
-
----
-
-###  Analysis/simulation/
-
-This folder contains simulation studies designed to **evaluate the statistical performance of the DANDELION framework** under controlled data-generating mechanisms.
-
-The simulations focus on assessing:
-
-- **Statistical power (simulation_power.R)**  
-  The ability of DANDELION to correctly identify disease-proximal genes (gene2) that truly mediate the effects of gene1 on the trait.
-
-- **False discovery rate (FDR) control (simulation_fdr.R)**  
-  The accuracy of DANDELION in maintaining target FDR levels across a wide range of signal sparsity and effect size configurations.
-
-
-- **Compare with competing method (Archie) (simulation_compare.R)**  
-  Performance is evaluated at both:
-  - the **global level** (aggregating signals across all gene1), and
-  - the **per-gene / per-SNP level**, ensuring stable behavior across analytical resolutions.
-
-All simulation pipelines use the **same DANDELION test statistic** as implemented in the real data analysis (`med_gene()`), ensuring full methodological consistency.
-
----
-
-### Analysis/real_data 
-
-This folder contains all analyses based on **real human genetic data**, serving as the primary application of the DANDELION framework.
-
-In particular, it includes:
-
-- **Blood trait analyses (blood trait analysis.R)**  
-  Application of DANDELION to blood-related traits by integrating:
-  - trans-regulatory association statistics,
-  - whole-exome sequencing (WES)–based gene-level association results,
-  - identification of candidate disease-proximal genes that mediate the effects of disease-associated loci on blood traits.
-All real data analyses follow the same statistical definitions and analytical pipeline validated in the simulation studies.
-
-- **Enrichment_analysis (enrichment_func.R)**
-
-  Enrichment analyses applied to genes prioritized by **DANDELION** in real data.
-
-  For each blood-related trait, we assess whether **DANDELION-identified disease-proximal genes** are enriched for **known Mendelian disease genes**, compared      with randomly sampled gene sets matched on gene length.  
-  
-  Enrichment is evaluated for multiple gene categories, including:
-  - all disease-proximal genes identified by DANDELION,
-  - disease-proximal genes that are significant in whole-exome sequencing (WES),
-  - disease-proximal genes that are not WES-significant,
-  - burden-only genes identified by WES but not prioritized by DANDELION.
-
-This analysis provides biological validation of DANDELION by testing whether its prioritized genes are preferentially associated with known Mendelian disease mechanisms beyond standard burden-based approaches.
-
----
-
-###  Methodological Consistency
-
-Simulation studies and real data analyses are tightly coupled:
-
-> Simulation studies establish the statistical validity and operating characteristics of DANDELION, while real data analyses demonstrate its practical utility.  
-> All analyses are performed using the same core DANDELION statistic and modeling assumptions.
-
-
-
-# Installation
-
-
-You can install the development version of
-`DANDELION` from Github via the `devtools` package. I suppose using
-the `remotes` package would work as well.
-
-Before installation of DANDELION, you are also requested the below packages:
-``` r
-install.packages(c('qvalue', 'data.table', 'stringr', 'tidyr', 'AnnotationDbi', 'org.Hs.eg.db', 'ggplot2', 'igraph', 'VennDiagram', 'biomaRt', 'plyr', 'dplyr'), dependencies=TRUE)
-
-```
-
-``` r
-devtools::install_github("mxxptian/DANDELION")
-```
-
-# Example
-
-You can access the example code and data through: https://www.dropbox.com/scl/fo/b1r27fxqlq84ywory8qmo/ABRuFJpz1FIAy9vluMhLAMU?rlkey=n3pzgkdd0fqz9waamidlyfcfy&dl=0
-```r
-
-
-library(qvalue)
-library(data.table)
-library(stringr)
-library(plyr)
-library(tidyr)
-library(tidyverse)
-library(readr)
-library(gprofiler2)
-library(VennDiagram)
-library(igraph)
-library(DANDELION)  
-library(biomaRt)
-library(rsnps)
-
-################################# Gene->Gene->Trait CASE ######################################
-# Here we use UKBB summary statistics and GBAT result as an example for gene-gene case
-
-# load UKBB summary statistics
-dat = read.table(gzfile('GCST90082964_buildGRCh38.tsv.gz'), header = TRUE)
-
-dat_M3.1 = dat[dat$effect_allele=='M3.1',]
-
-head(dat_M3.1)
-
-out.pheno <- strsplit(as.character(dat_M3.1$Name),'\\.') 
-info.out.pheno = do.call(rbind, out.pheno)
-
-out.new <- strsplit(as.character(info.out.pheno[,1]),'\\(')
-info.out.new = do.call(rbind, out.new)
-
-dat_M3.1$Name = info.out.new[,1]
-
-dat_M3.1_new = dat_M3.1[!dat_M3.1$Name%in%names(which(table(dat_M3.1$Name)!=1)),]
-
-head(dat_M3.1_new)
-
-cau = data.frame(pval = dat_M3.1_new$p_value)
-rownames(cau) = dat_M3.1_new$Name
-
-p.wgs <- cau[,1]
-p.wgs <- na.omit(p.wgs)
-names(p.wgs) = dat_M3.1_new$Name
-
-# load GBAT data
-p.trans <- read.delim('/GBAT/trans_pval/cor_chr1_all.txt', sep = '\t')
-
-for (i in 2:22) {
-  temp = read.delim(paste0('/GBAT/trans_pval/cor_chr',i,'_all.txt'), sep = '\t')
-  p.trans = cbind(p.trans,temp)
-}
-rm(temp)
-
-threshold = 0.05/nrow(cau)
-eta.wgs = threshold
-
-# load reference table including gene position and gene type. Note!!! this position is GRCH 37
-ref.table = read.delim('gene_position.txt', sep = '\t')
-
-## only keep gene type in (lincRNA, protein_coding)
-ref.table.keep <- ref.table[ref.table$type %in% c('lincRNA', 'protein_coding'),]
-
-## remove genes on chr M, X, and Y
-ref.table.keep <- ref.table.keep[!(ref.table.keep$Chromosome %in% c('chrM', 'chrX', 'chrY')),]
-
-ref.table.keep <-ref.table.keep[!duplicated(ref.table.keep$gene_name),]
-
-## standardize gene name
-out.ref <- strsplit(as.character(ref.table.keep$gene_name),'\\.')
-out.ref.new = do.call(rbind, out.ref)
-ref.table.keep$gene_name = out.ref.new[,1]
-
-# Here, we consider all gene1 included in UKBB. You may specify a vector of candidate genes 1
-gene1.list = dput(colnames(p.trans))  
-
-# STEP 1: we applied DANDELION with UKBB and GBAT data with target fdr level at 0.1
-result = med_gene(p.trans, p.wgs, ref.table, gene1.list, target.fdr=0.1, dist=5e6, gene1.type = 'Gene')
-
-# STEP 2: we obtained the pair identified by DANDELION
-result.pair = calc_pair.gene(result$mat.sig, result$mat.p, p.wgs, result$gene1, ref.table.keep, eta.wgs=threshold)
-
-# STEP 3: we plotted the pair identified by DANDELION
-setwd('/Users/px/Desktop/test/example/')
-
-## load conservation score table
-conv.table = read_excel('conservation_scores.xlsx')
-
-## set saving directory of the figures
-pic_dir = '/Users/px/Desktop/test/example/'
-
-gen_fig(result.pair$gene.pair, p.wgs, eta.wgs=threshold, pic_dir) 
-
-################################# SNP->Gene->Trait CASE ######################################
-
-# Here we use UKBB summary statistics and GBAT result as an example for snp-gene case
-
-# You can access this file by (https://www.dropbox.com/scl/fo/b1r27fxqlq84ywory8qmo/ABRuFJpz1FIAy9vluMhLAMU?rlkey=n3pzgkdd0fqz9waamidlyfcfy&dl=0).
-# Note!!! The file size is very large.
-trans.p = fread('2018-09-04-trans-eQTLsFDR-CohortInfoRemoved-BonferroniAdded.txt', sep = '\t')
-
-# This matrix includes the p-values from snp -> core genes
-load('trans-eQTL_genetype_genename.Rdata')
-p.trans = t(pval.sub)
-
-# This file includes the significant cis-gene
-load('snp2sig_cisgene.Rdata')
-
-load('GCST90082964.Rdata')
-head(dat_M3.1)
-
-out.pheno <- strsplit(as.character(dat_M3.1$Name),'\\.')
-info.out.pheno = do.call(rbind, out.pheno)
-
-out.new <- strsplit(as.character(info.out.pheno[,1]),'\\(')
-info.out.new = do.call(rbind, out.new)
-
-dat_M3.1$Name = info.out.new[,1]
-
-dat_M3.1_new = dat_M3.1[!dat_M3.1$Name%in%names(which(table(dat_M3.1$Name)!=1)),]
-
-head(dat_M3.1_new)
-
-cau = data.frame(pval = dat_M3.1_new$p_value)
-rownames(cau) = dat_M3.1_new$Name
-
-p.wgs <- cau[,1]
-p.wgs <- na.omit(p.wgs)
-names(p.wgs) = dat_M3.1_new$Name
-
-# Be care about the build version of the position
-ref.table = read.delim('gene_position.txt', sep = '\t')
-
-threshold = 0.05/nrow(cau)
-eta.wgs = threshold
-
-## only keep gene type in (lincRNA, protein_coding)
-ref.table.keep <- ref.table[ref.table$type %in% c('lincRNA', 'protein_coding'),]
-
-## remove genes on chr M, X, and Y
-ref.table.keep <- ref.table.keep[!(ref.table.keep$Chromosome %in% c('chrM', 'chrX', 'chrY')),]
-
-ref.table.keep <-ref.table.keep[!duplicated(ref.table.keep$gene_name),]
-
-## standardize gene name
-out.ref <- strsplit(as.character(ref.table.keep$gene_name),'\\.')
-out.ref.new = do.call(rbind, out.ref)
-ref.table.keep$gene_name = out.ref.new[,1]
-
-# Here, we consider all gene1 included in UKBB. You may specify a vector of candidate genes 1
-gene1.list = dput(colnames(p.trans)) 
-
-# STEP 1: we applied DANDELION with UKBB and eQTLGen data with target fdr level at 0.1
-result = med_gene(p.trans, p.wgs, ref.table, gene1.list, target.fdr=0.1, dist=5e6, gene1.type = 'SNP', SNP.ref = trans.p)
-
-# STEP 2: we obtained the pair identified by DANDELION
-result.pair = calc_pair.snp(mat.sig = result$mat.sig, mat.p = result$mat.p, p.wgs, gene1 = result$gene1, 
-                           uniq_snp = uniq_snp, ref.table.keep = ref.table.keep, eta.wgs=threshold, GRCh = '37')
-
-# STEP 3: we plotted the pair identified by DANDELION
-setwd('/PATH_TO_FIG_FOLDER')
-
-## load conservation score table
-conv.table = read_excel('conservation_scores.xlsx')
-
-## set saving directory of the figures
-pic_dir = '/PATH_TO_FIG_FOLDER'
-
-
-gen_fig(result.pair$gene.pair, p.wgs, eta.wgs=threshold, pic_dir)  
-
-
-
-```
+This package is distributed under the GNU General Public License v3.0. See the `LICENSE` file for details.

@@ -1,0 +1,21 @@
+Package: DANDELION
+Type: Package
+Title: Discovery of Candidate Disease Genes Using Trans-Regulatory Effects
+Version: 0.1.0
+Authors@R: 
+    person(
+        given = "Peixin",
+        family = "Tian",
+        role = c("aut", "cre"),
+        email = "pxtian@connect.hku.hk"
+    )
+Description:Implements the DANDELION method for prioritizing candidate disease-related proximal genes by integrating trans-regulatory association p-values and gene-level trait association p-values. The statistical testing framework builds on the divide-aggregate composite-null test described by Liu et al. (2022) <doi:10.1080/01621459.2021.1914634>. The biological application and SNP/gene-based prioritization workflow are motivated by Salamone et al. (under review), "Leveraging trans-gene regulation prioritizes central genes and pathways in asthma". The package provides functions for identifying distal-proximal gene pairs, organizing significant pairs into genomic loci, and visualizing resulting gene networks.
+License: GPL-3
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Imports:
+    igraph
+Suggests:
+    qvalue
+Additional_repositories: https://bioconductor.org/packages/release/bioc

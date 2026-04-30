@@ -1,0 +1,10 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^cran-comments\.md$
+^\.git$
+^\.github$
+^\.gitignore$
+^README\.Rmd$
+^DANDELION_.*\.tar\.gz$
+^.*\.Rcheck$
+^\.DS_Store$
