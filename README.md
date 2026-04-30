@@ -15,23 +15,28 @@ Using this causal mediation framework, `DANDELION` integrates gene-level effects
 
 In the R functions and examples below, disease-distal genes, or putative trans-regulatory genes, are denoted as **gene1**, whereas disease-proximal genes, or candidate mediators and trans-regulatory targets, are denoted as **gene2**.
 
+
+
+## Code Authorship and Copyright
+
+**R implementation:** Peixin Tian
+
+**Copyright:** Copyright (C) 2025 Peixin Tian.
+
+**License:** GPL-3.0 (see LICENSE file)
+
+**Affiliation:** The implementation was completed during Peixin Tian's doctoral research.
+
+**Data:** The trans-gene expression data in asthma was provided by Dr. Xuanyao Liu.
+
 ## Citation
 
-The statistical testing framework in `DANDELION` builds on the Divide-Aggregate Composite-null Test (DACT):
+
+If you use this code, please cite:
 
 Liu, Z., Shen, J., Barfield, R., Schwartz, J., Baccarelli, A. A., & Lin, X. (2022). Large-Scale Hypothesis Testing for Causal Mediation Effects with Applications in Genome-wide Epigenetic Studies. *Journal of the American Statistical Association*, 117(537), 67–81. https://doi.org/10.1080/01621459.2021.1914634
 
-The trans-gene regulation application is described in:
-
 Salamone, I. M., Tian, P., Qi, Z., Zhao, J., Zhang, L., Tan, Q., Li, J., Michael, A. N., Thornburg, A. G., Sakabe, N. J., Weber, Z. T., Minogue, M., Chen, B., Ciszewski, C., He, X., Shah, H., Vercelli, D., Ober, C., Lin, H., Liu, Z., Nóbrega, M. A., & Liu, X. (under review). *Leveraging trans-gene regulation prioritizes central genes and pathways in asthma*.
-
-## Authorship
-
-The original R implementation of `DANDELION` was written by **Peixin Tian** as part of research conducted in the laboratory of **Dr. Zhonghua Liu**.
-
-Lab website: https://sites.google.com/view/drliu/home
-
-Copyright (C) 2025 Peixin Tian.
 
 ## Details
 
