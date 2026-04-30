@@ -8,8 +8,6 @@ This package accompanies the study:
 
 > *Leveraging trans-gene regulation prioritizes central genes and pathways in asthma*.
 
-In the `DANDELION` framework, disease-associated loci or genes are treated as upstream exposures, and genome-wide genes are evaluated as candidate mediators. Candidate mediator genes prioritized by significant mediation paths are referred to as **disease-proximal genes (DPGs)**. Disease-associated loci or regulatory genes that may act upstream of DPGs are referred to as **disease-distal genes**.
-
 The release version of DANDELION is archived on Zenodo at DOI: 10.5281/zenodo.19911607.
 
 In the R functions and examples below:
