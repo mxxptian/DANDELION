@@ -444,12 +444,6 @@ The trans-gene regulation application is described in:
 
 **License:** GPL-3.0. See the `LICENSE` file.
 
-**Affiliation:** The original R implementation was written by Peixin Tian as part of research conducted in the laboratory of Dr. Zhonghua Liu.
-
-Lab website: [https://sites.google.com/view/drliu/home](https://sites.google.com/view/drliu/home)
-
-**Data note:** The summary-level data for trans-eQTL, UK Biobank and GBAT were provided by Dr. Xuanyao Liu.
-
 ## License
 
 This package is distributed under the GNU General Public License v3.0. See the `LICENSE` file for details.
