@@ -394,14 +394,8 @@ All simulation pipelines use the same core DANDELION test statistic implemented 
 
 ### `Analysis/real_data/`
 
-This folder contains real-data analyses applying DANDELION to human genetic and transcriptomic association data.
+This folder will be made publicly available upon completion of peer review.
 
-Example analyses include:
-
-* **Blood trait analyses** integrating trans-regulatory statistics with WES-based gene-level association results.
-* **Enrichment analyses** evaluating whether DANDELION-prioritized DPGs are enriched for known disease genes compared with matched random gene sets.
-
-The real-data analyses demonstrate how DANDELION can prioritize candidate mediator genes beyond standard burden-based approaches.
 
 ## Methodological consistency
 
