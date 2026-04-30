@@ -390,7 +390,7 @@ The simulation analyses assess:
 * **False discovery rate control**: the ability of DANDELION to maintain target FDR levels across signal sparsity and effect-size settings.
 * **Comparison with competing methods**: performance relative to alternative approaches, including Archie, at both global and per-exposure levels.
 
-* A lightweight simulation template is provided in: Analysis/simulation/global_fdr_simulation_template.R & Analysis/simulation/simulation_compare_template.R
+* **A lightweight simulation template is provided in**: Analysis/simulation/global_fdr_simulation_template.R & Analysis/simulation/simulation_compare_template.R
 
 All simulation pipelines use the same core DANDELION test statistic implemented in `med_gene()`.
 
