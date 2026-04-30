@@ -405,7 +405,7 @@ The statistical testing method in `DANDELION` builds on the Divide-Aggregate Com
 
 > Liu, Z., Shen, J., Barfield, R., Schwartz, J., Baccarelli, A. A., & Lin, X. (2022). Large-Scale Hypothesis Testing for Causal Mediation Effects with Applications in Genome-wide Epigenetic Studies. *Journal of the American Statistical Association*, 117(537), 67–81. [https://doi.org/10.1080/01621459.2021.1914634](https://doi.org/10.1080/01621459.2021.1914634)
 
-The trans-gene regulation application is described in:
+The trans-gene regulation paper is here:
 
 > Salamone, I. M., Tian, P., Qi, Z., Zhao, J., Zhang, L., Tan, Q., Li, J., Michael, A. N., Thornburg, A. G., Sakabe, N. J., Weber, Z. T., Minogue, M., Chen, B., Ciszewski, C., He, X., Shah, H., Vercelli, D., Ober, C., Lin, H., Liu, Z., Nóbrega, M. A., & Liu, X. (under review). *Leveraging trans-gene regulation prioritizes central genes and pathways in asthma*.
 
