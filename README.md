@@ -1,4 +1,4 @@
-# DANDELION
+<img width="468" height="13" alt="image" src="https://github.com/user-attachments/assets/1e2bc44a-e7e8-4505-ab68-65e8c2b0dbb5" /><img width="468" height="13" alt="image" src="https://github.com/user-attachments/assets/f489186a-072c-4746-b219-81c277468cb7" /># DANDELION
 
 `DANDELION` is an R package for identifying **disease-proximal genes (DPGs)** that may mediate the effects of disease-associated loci on disease risk. It provides an implementation of a mediation-based gene prioritization framework that integrates trans-regulatory association signals with gene-level disease association evidence.
 
@@ -407,7 +407,9 @@ The statistical testing method in `DANDELION` builds on the Divide-Aggregate Com
 
 The trans-gene regulation paper is here:
 
-> Salamone, I. M., Tian, P., Qi, Z., Zhao, J., Zhang, L., Tan, Q., Li, J., Michael, A. N., Thornburg, A. G., Sakabe, N. J., Weber, Z. T., Minogue, M., Chen, B., Ciszewski, C., He, X., Shah, H., Vercelli, D., Ober, C., Lin, H., Liu, Z., Nóbrega, M. A., & Liu, X. (under review). *Leveraging trans-gene regulation prioritizes central genes and pathways in asthma*.
+> Salamone, I. M.#, Tian, P.#, Qi, Z., Zhao, J., Zhang, L., Tan, Q., Li, J., Michael, A. N., Thornburg, A. G., Sakabe, N. J., Weber, Z. T., Minogue, M., Chen, B., Ciszewski, C., He, X., Shah, H., Vercelli, D., Ober, C., Lin, H., Liu, Z.*, Nóbrega, M. A.*, & Liu, X.* (under review). *Leveraging trans-gene regulation prioritizes central genes and pathways in asthma*.
+
+> Note: # indicates authors contributed equally to this work.
 
 ## Authorship and copyright
 
