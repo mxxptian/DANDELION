@@ -397,12 +397,6 @@ All simulation pipelines use the same core DANDELION test statistic implemented 
 This folder will be made publicly available upon completion of peer review.
 
 
-## Methodological consistency
-
-Simulation and real-data analyses use the same core DANDELION statistic and modeling assumptions.
-
-> Simulation studies establish the statistical validity and operating characteristics of DANDELION, while real-data analyses demonstrate its practical utility.
-
 ## Citation
 
 If you use `DANDELION`, please cite the following work.
