@@ -448,7 +448,7 @@ The trans-gene regulation application is described in:
 
 Lab website: [https://sites.google.com/view/drliu/home](https://sites.google.com/view/drliu/home)
 
-**Data note:** The trans-gene expression data in asthma were provided by Dr. Xuanyao Liu.
+**Data note:** The summary-level data for trans-eQTL, UK Biobank and GBAT were provided by Dr. Xuanyao Liu.
 
 ## License
 
