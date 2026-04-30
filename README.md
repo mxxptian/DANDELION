@@ -401,7 +401,7 @@ This folder will be made publicly available upon completion of peer review.
 
 If you use `DANDELION`, please cite the following work.
 
-The statistical testing framework in `DANDELION` builds on the Divide-Aggregate Composite-null Test:
+The statistical testing method in `DANDELION` builds on the Divide-Aggregate Composite-null Test (DACT):
 
 > Liu, Z., Shen, J., Barfield, R., Schwartz, J., Baccarelli, A. A., & Lin, X. (2022). Large-Scale Hypothesis Testing for Causal Mediation Effects with Applications in Genome-wide Epigenetic Studies. *Journal of the American Statistical Association*, 117(537), 67–81. [https://doi.org/10.1080/01621459.2021.1914634](https://doi.org/10.1080/01621459.2021.1914634)
 
