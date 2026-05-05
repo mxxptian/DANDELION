@@ -1,0 +1,296 @@
+---
+title: "Getting started with DANDELION"
+author: "Peixin Tian"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting started with DANDELION}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5
+)
+```
+
+# Overview
+
+`DANDELION` identifies candidate disease-proximal genes (DPGs) by integrating trans-regulatory association evidence with gene-level disease association evidence. In the package interface, upstream exposures are referred to as `gene1`, and candidate disease-proximal genes are referred to as `gene2`.
+
+The exposure side can be either:
+
+- **Gene-based**: columns of `p.trans` are distal regulatory genes.
+- **SNP-based**: columns of `p.trans` are SNPs.
+
+For both modes, rows of `p.trans` are candidate disease-proximal genes (`gene2`). The vector `p.wes` contains gene-level disease association p-values and should be named using the same gene identifiers as `rownames(p.trans)`.
+
+`DANDELION` removes nearby cis genes using genomic positions and evaluates distal/trans-mediated paths. It returns structured objects that can be printed, inspected, and passed to downstream pair-organization functions.
+
+# Installation
+
+Install the development version from GitHub:
+
+```{r, eval = FALSE}
+# install.packages("remotes")
+remotes::install_github("mxxptian/DANDELION")
+```
+
+Load the package:
+
+```{r}
+library(DANDELION)
+```
+
+The optional Bioconductor package `qvalue` is used when available for q-value estimation. If `qvalue` is unavailable, `DANDELION` falls back to Benjamini-Hochberg adjusted p-values.
+
+```{r, eval = FALSE}
+# install.packages("BiocManager")
+BiocManager::install("qvalue")
+```
+
+# Input data structure
+
+## `p.trans`
+
+`p.trans` is a numeric matrix of trans-regulatory association p-values.
+
+- Rows: candidate disease-proximal genes (`gene2`)
+- Columns: exposures (`gene1`), either distal genes or SNPs
+- Both row names and column names are required
+
+## `p.wes`
+
+`p.wes` is a named numeric vector of gene-level disease association p-values. Its names should overlap with `rownames(p.trans)`.
+
+## `ref.table`
+
+`ref.table` is a gene annotation table used for matching genes and removing local cis genes. It must contain:
+
+| Column | Description |
+|---|---|
+| `gene_name` | Gene symbol or gene identifier |
+| `type` | Gene type, such as `protein_coding` or `lincRNA` |
+| `Chromosome` | Chromosome in `chr1`, `chr2`, ... format |
+| `start` | Gene start position |
+| `end` | Gene end position |
+
+For SNP-based DANDELION, `SNP.ref` is also required and must contain `SNP`, `SNPPos`, and `SNPChr`.
+
+# Gene-based DANDELION example
+
+This example uses a small toy dataset. It is designed to demonstrate input format and function usage rather than reproduce manuscript-scale analyses.
+
+```{r gene-data}
+set.seed(1)
+
+# Trans-association p-values: rows are gene2, columns are gene1.
+p.trans <- matrix(runif(60, 0.001, 0.9), nrow = 12, ncol = 5)
+rownames(p.trans) <- paste0("G", 1:12)
+colnames(p.trans) <- paste0("E", 1:5)
+
+# Gene-level disease association p-values.
+p.wes <- runif(12, 0.001, 0.9)
+names(p.wes) <- paste0("G", 1:12)
+
+# Gene annotation table.
+ref.table <- data.frame(
+  gene_name = c(paste0("G", 1:12), paste0("E", 1:5)),
+  type = "protein_coding",
+  Chromosome = "chr1",
+  start = seq_len(17) * 1e7,
+  end = seq_len(17) * 1e7 + 1000
+)
+
+head(p.trans[, 1:3])
+head(p.wes)
+head(ref.table)
+```
+
+Run gene-based DANDELION:
+
+```{r gene-run}
+res.gene <- med_gene(
+  p.trans = p.trans,
+  p.wes = p.wes,
+  ref.table = ref.table,
+  gene1.list = colnames(p.trans),
+  gene1.type = "Gene",
+  target.fdr = 0.1,
+  dist = 5e6
+)
+
+res.gene
+```
+
+The returned object has class `dandelion_result` and contains:
+
+```{r gene-result-contents}
+names(res.gene)
+res.gene$gene1
+res.gene$mat.sig[1:5, 1:3]
+res.gene$mat.p[1:5, 1:3]
+```
+
+Next, organize significant gene-gene pairs:
+
+```{r gene-pairs}
+ref.table.keep <- ref.table[
+  ref.table$type %in% c("lincRNA", "protein_coding") &
+    !(ref.table$Chromosome %in% c("chrM", "chrX", "chrY")),
+]
+
+pair.gene <- calc_pair.gene(
+  mat.sig = res.gene$mat.sig,
+  mat.p = res.gene$mat.p,
+  p.wes = p.wes,
+  gene1 = res.gene$gene1,
+  ref.table.keep = ref.table.keep,
+  eta.wgs = 1e-5
+)
+
+pair.gene
+names(pair.gene)
+```
+
+The organized pair object contains the significant pair table, locus-level pair table, WES-significant `gene2` genes, and non-WES-significant `gene2` genes:
+
+```{r gene-pair-contents}
+head(pair.gene$pairs_dact)
+head(pair.gene$gene.pair)
+pair.gene$sig_gene2
+pair.gene$non_sig.gene2
+```
+
+# SNP-based DANDELION example
+
+For SNP-based DANDELION, columns of `p.trans` are SNPs. The user must provide SNP positions through `SNP.ref`.
+
+```{r snp-data}
+set.seed(2)
+
+p.trans.snp <- matrix(runif(60, 0.001, 0.9), nrow = 12, ncol = 5)
+rownames(p.trans.snp) <- paste0("G", 1:12)
+colnames(p.trans.snp) <- paste0("rs", 1:5)
+
+p.wes.snp <- runif(12, 0.001, 0.9)
+names(p.wes.snp) <- paste0("G", 1:12)
+
+ref.table.snp <- data.frame(
+  gene_name = c(paste0("G", 1:12), paste0("E", 1:5)),
+  type = "protein_coding",
+  Chromosome = "chr1",
+  start = seq_len(17) * 1e7,
+  end = seq_len(17) * 1e7 + 1000
+)
+
+SNP.ref <- data.frame(
+  SNP = paste0("rs", 1:5),
+  SNPPos = seq_len(5) * 2e7,
+  SNPChr = "1"
+)
+
+uniq_snp <- data.frame(
+  SNP = paste0("rs", 1:5),
+  GeneSymbol = paste0("E", 1:5)
+)
+
+head(p.trans.snp[, 1:3])
+head(SNP.ref)
+head(uniq_snp)
+```
+
+Run SNP-based DANDELION:
+
+```{r snp-run}
+res.snp <- med_gene(
+  p.trans = p.trans.snp,
+  p.wes = p.wes.snp,
+  ref.table = ref.table.snp,
+  gene1.list = colnames(p.trans.snp),
+  gene1.type = "SNP",
+  SNP.ref = SNP.ref,
+  target.fdr = 0.1,
+  dist = 5e6
+)
+
+res.snp
+```
+
+Organize SNP-gene pairs:
+
+```{r snp-pairs}
+ref.table.keep.snp <- ref.table.snp[
+  ref.table.snp$type %in% c("lincRNA", "protein_coding") &
+    !(ref.table.snp$Chromosome %in% c("chrM", "chrX", "chrY")),
+]
+
+pair.snp <- calc_pair.snp(
+  mat.sig = res.snp$mat.sig,
+  mat.p = res.snp$mat.p,
+  p.wes = p.wes.snp,
+  gene1 = res.snp$gene1,
+  uniq_snp = uniq_snp,
+  ref.table.keep = ref.table.keep.snp,
+  SNP.ref = SNP.ref,
+  eta.wgs = 1e-5
+)
+
+pair.snp
+head(pair.snp$pairs_dact)
+head(pair.snp$gene.pair)
+```
+
+# Network visualization
+
+`gen_fig()` generates a network figure from an organized pair table. The pair table must contain `region` and `gene2` columns.
+
+Because the toy example may not produce significant pairs, the following code is shown but not evaluated in this vignette.
+
+```{r network-fig, eval = FALSE}
+out_dir <- tempdir()
+fig_file <- gen_fig(
+  gene.pair = pair.gene$gene.pair,
+  p.wes = p.wes,
+  eta.wgs = 1e-5,
+  pic_dir = out_dir
+)
+
+fig_file
+```
+
+# Verbose output
+
+By default, `DANDELION` functions do not print progress messages to the console. To show progress messages, set `verbose = TRUE`:
+
+```{r verbose-example, eval = FALSE}
+res.verbose <- med_gene(
+  p.trans = p.trans,
+  p.wes = p.wes,
+  ref.table = ref.table,
+  gene1.list = colnames(p.trans),
+  gene1.type = "Gene",
+  verbose = TRUE
+)
+```
+
+# Recommended workflow
+
+A typical analysis workflow is:
+
+1. Prepare the trans-association p-value matrix `p.trans`.
+2. Prepare the named gene-level disease association vector `p.wes`.
+3. Prepare gene annotation `ref.table`.
+4. Run `med_gene()` with `gene1.type = "Gene"` or `gene1.type = "SNP"`.
+5. Organize significant pairs using `calc_pair.gene()` or `calc_pair.snp()`.
+6. Inspect `pairs_dact`, `gene.pair`, `sig_gene2`, and `non_sig.gene2`.
+7. Optionally visualize the resulting network using `gen_fig()`.
+
+# Session information
+
+```{r session-info}
+sessionInfo()
