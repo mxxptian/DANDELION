@@ -17,5 +17,8 @@ RoxygenNote: 7.3.3
 Imports:
     igraph
 Suggests:
-    qvalue
+    qvalue,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
 Additional_repositories: https://bioconductor.org/packages/release/bioc
