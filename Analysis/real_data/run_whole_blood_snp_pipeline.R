@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 
-# examples/run_dandelion_snp_pipeline.R
+# Analysis/real_data/run_whole_blood_snp_pipeline.R
 #
 # SNP-based DANDELION pipeline template
 # ------------------------------------------------------------
@@ -8,10 +8,6 @@
 # functions from the DANDELION R package:
 #   - med_gene()
 #   - calc_pair.snp()
-#
-# The original Midway3/HPC version used local paths, package installation logic,
-# and manually redefined DANDELION helper functions. This public GitHub version
-# removes local paths and calls the package implementation directly.
 #
 # Usage example:
 #   Rscript examples/run_dandelion_snp_pipeline.R \
