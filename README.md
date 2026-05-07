@@ -377,28 +377,55 @@ res <- med_gene(
 
 ## Analysis directory
 
-If provided with the GitHub repository, the `Analysis/` directory contains scripts used for simulation and real-data applications.
+The `Analysis/` directory contains public templates and example scripts for running DANDELION simulation and real-data workflows.
+
+During peer review, this repository provides lightweight, GitHub-friendly templates that demonstrate the expected input structure, DANDELION function calls, output format, and evaluation strategy. Full manuscript-scale data-generation scripts, internal HPC pipelines, real-data analysis scripts, and intermediate results are maintained privately during peer review to protect code provenance and avoid unauthorized redistribution.
 
 ### `Analysis/simulation/`
 
-This folder contains simulation studies designed to evaluate the statistical performance of DANDELION under controlled data-generating mechanisms.
+This folder contains lightweight simulation templates for evaluating the statistical performance of DANDELION under controlled settings.
 
-**A lightweight simulation template is provided in**: Analysis/simulation/global_fdr_simulation_template.R & Analysis/simulation/simulation_compare_template.R
+Available templates include:
 
-The simulation analyses assess:
+- `Analysis/simulation/global_fdr_simulation_template.R`  
+  Demonstrates how to evaluate DANDELION at both the gene level and the exposure-gene pair level, including TPP, FDR, selected gene counts, and selected pair counts.
 
-* **Statistical power**: the ability of DANDELION to correctly identify true disease-proximal genes.
-* **False discovery rate control**: the ability of DANDELION to maintain target FDR levels across signal sparsity and effect-size settings.
-* **Comparison with competing methods**: performance relative to alternative approaches, including Archie, at both global and per-exposure levels.
+- `Analysis/simulation/simulation_compare_template.R`  
+  Demonstrates how to organize simulation workflows comparing gene-based DANDELION, SNP-based DANDELION, and alternative methods using shared input/output structures.
 
+These public templates illustrate the simulation workflow but do not include the full manuscript-scale data-generation mechanism, large-scale parameter grid, competing-method implementation details, or HPC execution scripts.
 
+The simulation analyses are designed to assess:
 
-All simulation pipelines use the same core DANDELION test statistic implemented in `med_gene()`.
+- **Statistical power**: the ability of DANDELION to correctly identify true disease-proximal genes.
+- **False discovery rate control**: the ability of DANDELION to maintain target FDR levels across signal sparsity and effect-size settings.
+- **Gene-level and pair-level performance**: evaluation of both selected disease-proximal genes and selected exposure-gene pairs.
+- **Comparison with related methods**: comparison with alternative approaches under matched simulation settings.
+
+All simulation workflows use the same core DANDELION testing procedure implemented in `med_gene()`.
 
 ### `Analysis/real_data/`
 
-This folder will be made publicly available upon completion of peer review.
+This folder contains templates for applying DANDELION to real-data settings, including SNP-based trans-regulatory summary statistics and gene-level disease association results.
 
+Available templates include:
+
+- `Analysis/real_data/run_dandelion_snp_pipeline.R`  
+  A general SNP-based DANDELION pipeline template.
+
+- `Analysis/real_data/run_dandelion_asthma_pipeline.R`  
+  A trait-specific SNP-based DANDELION pipeline template originally structured for asthma-related analyses.
+
+These scripts demonstrate how to:
+
+- load trans-regulatory p-value matrices;
+- prepare SNP annotation and SNP-to-gene mapping tables;
+- prepare gene-level disease association p-values;
+- run `med_gene()` with `gene1.type = "SNP"`;
+- organize significant SNP-gene pairs using `calc_pair.snp()`;
+- save DANDELION results, pair tables, thresholds, and summary files.
+
+The full real-data analysis scripts, study-specific preprocessing steps, and intermediate outputs will be made publicly available upon completion of peer review, subject to data-use and collaboration agreements.
 
 ## Citation
 
