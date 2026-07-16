@@ -383,29 +383,30 @@ During peer review, this repository provides lightweight, GitHub-friendly templa
 
 ### `Analysis/simulation/`
 
-This folder contains simulation scripts for evaluating the statistical performance of DANDELION under controlled simulation settings.
-
-The simulation framework evaluates DANDELION for identifying disease-proximal genes through trans-regulatory mediation structures, including both gene-based and SNP-based analyses.
+This folder contains simulation scripts used to evaluate the statistical performance of DANDELION under controlled mediation settings.
 
 Available scripts include:
 
-- `Analysis/simulation/global_fdr_simulation.R`  
-  Demonstrates the workflow for evaluating DANDELION under controlled settings, including gene-level and exposure-gene pair-level performance metrics such as true positive proportion (TPP), false discovery rate (FDR), and the number of selected genes/pairs.
+- `simulation_compare.R`  
+  Implements the manuscript-scale simulation framework comparing DANDELION with ARCHIE. The simulation generates three independent samples to mimic realistic scenarios where genetic variants, gene expression, and complex traits are measured in non-overlapping cohorts. The framework evaluates gene-based DANDELION, SNP-based DANDELION, and ARCHIE in terms of statistical power and global false discovery rate (FDR) control.
 
-- `Analysis/simulation/simulation_compare.R`  
-  Demonstrates simulation workflows comparing gene-based DANDELION, SNP-based DANDELION, and alternative approaches using consistent input/output structures.
+- `sim_global_qvalue.R`  
+  Evaluates the global FDR calibration of DANDELION under controlled simulation settings. This simulation generates disease-distal gene to target gene mediation structures and assesses gene-level and pair-level discovery performance across prespecified FDR thresholds using q-value based inference.
 
-- `Analysis/simulation/run_three_sample_alpha.R`  
-  Implements the manuscript-scale simulation framework used to evaluate DANDELION against alternative methods. The simulation generates mediation structures involving cis genetic regulation of disease-distal genes, trans regulation of target genes, and downstream disease effects, and evaluates power and global FDR control under different signal-strength settings.
+- `global_fdr_simulation_template.R`  
+  Provides a simplified example demonstrating how to evaluate DANDELION at both the gene level and exposure-gene pair level, including performance metrics such as true positive proportion (TPP), FDR, and the number of selected genes/pairs.
+
+- `simulation_compare_template.R`  
+  Provides a lightweight example illustrating how to organize simulation workflows comparing different DANDELION analysis strategies using shared input/output structures.
 
 The simulation framework evaluates:
 
-- **Statistical power**: the proportion of true disease-proximal genes successfully identified.
+- **Statistical power**: the proportion of true disease-proximal genes correctly identified.
 - **False discovery rate control**: the ability of DANDELION to maintain the prespecified FDR levels.
-- **Gene-level and pair-level performance**: evaluation of disease-proximal gene discovery and exposure-gene pair identification.
+- **Gene-level and pair-level performance**: evaluation of disease-proximal gene discovery and exposure-gene pair prioritization.
 - **Method comparison**: comparison of DANDELION with alternative approaches under matched simulation settings.
 
-All simulation analyses use the core DANDELION testing procedures implemented in `med_gene()`, together with downstream pair-level inference functions.
+The manuscript-scale simulation implements the DANDELION testing framework and downstream inference procedures used in the study, while the template scripts provide simplified examples for applying DANDELION in user-defined simulation settings.
 
 ---
 
