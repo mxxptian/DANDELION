@@ -412,23 +412,26 @@ The manuscript-scale simulation implements the DANDELION testing framework and d
 
 ### `Analysis/real_data/`
 
-This folder contains scripts for applying DANDELION to real-data analyses, including SNP-based trans-regulatory analyses and gene-level disease association analyses.
+This folder contains scripts for applying DANDELION to real disease-trait datasets using SNP-based trans-regulatory summary statistics and gene-level disease association results.
 
 Available scripts include:
 
 - `Analysis/real_data/run_dandelion_snp_pipeline.R`  
-  A general SNP-based DANDELION analysis workflow.
+  A general SNP-based DANDELION workflow illustrating the application of DANDELION using trans-eQTL summary statistics, SNP annotation, SNP-to-gene mapping information, and trait-specific gene-level disease association results.
 
 - `Analysis/real_data/run_dandelion_asthma_pipeline.R`  
-  The SNP-based DANDELION workflow used for the asthma analysis reported in the manuscript.
+  The trait-specific SNP-based DANDELION workflow used for the asthma analysis reported in the manuscript.
 
-These scripts demonstrate the following analysis steps:
+- `Analysis/real_data/run_dandelion_real_data.R`  
+  Implements the generalized real-data analysis workflow used for multi-trait analyses in the manuscript. The same pipeline was applied across multiple disease traits by changing trait-specific input files.
 
-- loading trans-regulatory association summary statistics;
+The real-data workflows include:
+
+- loading trans-regulatory eQTL summary statistics;
 - preparing SNP annotation and SNP-to-gene mapping information;
-- preparing gene-level disease association p-values;
-- applying `med_gene()` with `gene1.type = "SNP"`;
-- performing SNP-gene pair prioritization using `calc_pair.snp()`;
+- preparing trait-specific gene-level disease association p-values;
+- applying `med_gene()` for trans-regulatory mediation analysis;
+- performing downstream SNP-gene pair prioritization;
 - saving DANDELION results, significant SNP-gene pairs, and summary outputs.
 
 
