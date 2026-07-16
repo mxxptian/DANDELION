@@ -383,49 +383,53 @@ During peer review, this repository provides lightweight, GitHub-friendly templa
 
 ### `Analysis/simulation/`
 
-This folder contains lightweight simulation templates for evaluating the statistical performance of DANDELION under controlled settings.
+This folder contains simulation scripts for evaluating the statistical performance of DANDELION under controlled simulation settings.
 
-Available templates include:
+The simulation framework evaluates DANDELION for identifying disease-proximal genes through trans-regulatory mediation structures, including both gene-based and SNP-based analyses.
 
-- `Analysis/simulation/global_fdr_simulation_template.R`  
-  Demonstrates how to evaluate DANDELION at both the gene level and the exposure-gene pair level, including TPP, FDR, selected gene counts, and selected pair counts.
+Available scripts include:
 
-- `Analysis/simulation/simulation_compare_template.R`  
-  Demonstrates how to organize simulation workflows comparing gene-based DANDELION, SNP-based DANDELION, and alternative methods using shared input/output structures.
+- `Analysis/simulation/global_fdr_simulation.R`  
+  Demonstrates the workflow for evaluating DANDELION under controlled settings, including gene-level and exposure-gene pair-level performance metrics such as true positive proportion (TPP), false discovery rate (FDR), and the number of selected genes/pairs.
 
-These public templates illustrate the simulation workflow but do not include the full manuscript-scale data-generation mechanism, large-scale parameter grid, competing-method implementation details, or HPC execution scripts.
+- `Analysis/simulation/simulation_compare.R`  
+  Demonstrates simulation workflows comparing gene-based DANDELION, SNP-based DANDELION, and alternative approaches using consistent input/output structures.
 
-The simulation analyses are designed to assess:
+- `Analysis/simulation/run_three_sample_alpha.R`  
+  Implements the manuscript-scale simulation framework used to evaluate DANDELION against alternative methods. The simulation generates mediation structures involving cis genetic regulation of disease-distal genes, trans regulation of target genes, and downstream disease effects, and evaluates power and global FDR control under different signal-strength settings.
 
-- **Statistical power**: the ability of DANDELION to correctly identify true disease-proximal genes.
-- **False discovery rate control**: the ability of DANDELION to maintain target FDR levels across signal sparsity and effect-size settings.
-- **Gene-level and pair-level performance**: evaluation of both selected disease-proximal genes and selected exposure-gene pairs.
-- **Comparison with related methods**: comparison with alternative approaches under matched simulation settings.
+The simulation framework evaluates:
 
-All simulation workflows use the same core DANDELION testing procedure implemented in `med_gene()`.
+- **Statistical power**: the proportion of true disease-proximal genes successfully identified.
+- **False discovery rate control**: the ability of DANDELION to maintain the prespecified FDR levels.
+- **Gene-level and pair-level performance**: evaluation of disease-proximal gene discovery and exposure-gene pair identification.
+- **Method comparison**: comparison of DANDELION with alternative approaches under matched simulation settings.
+
+All simulation analyses use the core DANDELION testing procedures implemented in `med_gene()`, together with downstream pair-level inference functions.
+
+---
 
 ### `Analysis/real_data/`
 
-This folder contains templates for applying DANDELION to real-data settings, including SNP-based trans-regulatory summary statistics and gene-level disease association results.
+This folder contains scripts for applying DANDELION to real-data analyses, including SNP-based trans-regulatory analyses and gene-level disease association analyses.
 
-Available templates include:
+Available scripts include:
 
 - `Analysis/real_data/run_dandelion_snp_pipeline.R`  
-  A general SNP-based DANDELION pipeline template.
+  A general SNP-based DANDELION analysis workflow.
 
 - `Analysis/real_data/run_dandelion_asthma_pipeline.R`  
-  A trait-specific SNP-based DANDELION pipeline template originally structured for asthma-related analyses.
+  The SNP-based DANDELION workflow used for the asthma analysis reported in the manuscript.
 
-These scripts demonstrate how to:
+These scripts demonstrate the following analysis steps:
 
-- load trans-regulatory p-value matrices;
-- prepare SNP annotation and SNP-to-gene mapping tables;
-- prepare gene-level disease association p-values;
-- run `med_gene()` with `gene1.type = "SNP"`;
-- organize significant SNP-gene pairs using `calc_pair.snp()`;
-- save DANDELION results, pair tables, thresholds, and summary files.
+- loading trans-regulatory association summary statistics;
+- preparing SNP annotation and SNP-to-gene mapping information;
+- preparing gene-level disease association p-values;
+- applying `med_gene()` with `gene1.type = "SNP"`;
+- performing SNP-gene pair prioritization using `calc_pair.snp()`;
+- saving DANDELION results, significant SNP-gene pairs, and summary outputs.
 
-The full real-data analysis scripts, study-specific preprocessing steps, and intermediate outputs will be made publicly available upon completion of peer review, subject to data-use and collaboration agreements.
 
 ## Citation
 
