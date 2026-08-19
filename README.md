@@ -445,7 +445,7 @@ The statistical testing method in `DANDELION` builds on the Divide-Aggregate Com
 
 The trans-gene regulation paper is here:
 
-> Salamone, I.M.†, Tian, P.†, Qi, Z., Zhao, J., Zhang, L., Tan, Q., Li, J., Michael, A.N., Thornburg, A.G., Sakabe, N.J. and Minogue, M., 2026. Trans-regulatory gene mapping prioritizes disease drivers in asthma. Cell.
+> Salamone, I.M.†, Tian, P.†, Qi, Z., Zhao, J., Zhang, L., Tan, Q., Li, J., Michael, A.N., Thornburg, A.G., Sakabe, N.J. and Minogue, M., 2026. Trans-regulatory gene mapping prioritizes disease drivers in asthma. Cell. [https://www.cell.com/cell/fulltext/S0092-8674(26)00866-4](https://www.cell.com/cell/fulltext/S0092-8674(26)00866-4)
 
 > Note: † indicates authors contributed equally to this work.
 
