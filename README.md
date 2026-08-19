@@ -3,7 +3,7 @@
 
 This package accompanies the study:
 
-> *Leveraging trans-gene regulation prioritizes central genes and pathways in asthma*.
+> *Trans-regulatory gene mapping prioritizes disease drivers in asthma*.
 
 The release version of DANDELION is archived on Zenodo at DOI: 10.5281/zenodo.19911607.
 
@@ -445,7 +445,7 @@ The statistical testing method in `DANDELION` builds on the Divide-Aggregate Com
 
 The trans-gene regulation paper is here:
 
-> Salamone, I. M.†, Tian, P.†, Qi, Z., Zhao, J., Zhang, L., Tan, Q., Li, J., Michael, A. N., Thornburg, A. G., Sakabe, N. J., Weber, Z. T., Minogue, M., Chen, B., Ciszewski, C., He, X., Shah, H., Vercelli, D., Ober, C., Lin, H., Liu, Z. ‡, Nóbrega, M. A. ‡, & Liu, X.‡ (under review). *Leveraging trans-gene regulation prioritizes central genes and pathways in asthma*.
+> Salamone, I.M.†, Tian, P.†, Qi, Z., Zhao, J., Zhang, L., Tan, Q., Li, J., Michael, A.N., Thornburg, A.G., Sakabe, N.J. and Minogue, M., 2026. Trans-regulatory gene mapping prioritizes disease drivers in asthma. Cell.
 
 > Note: † indicates authors contributed equally to this work.
 
